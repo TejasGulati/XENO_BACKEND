@@ -1,11 +1,15 @@
 const Customer = require('../models/Customer');
+const RedisService = require('../services/redisService');
 
 // Create a new customer
 exports.createCustomer = async (req, res) => {
   try {
-    const newCustomer = new Customer(req.body);
-    const savedCustomer = await newCustomer.save();
-    res.status(201).json(savedCustomer);
+    // Publish to Redis instead of saving directly
+    await RedisService.publish('customer:create', req.body);
+    res.status(202).json({ 
+      message: 'Customer creation request accepted',
+      data: req.body
+    });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

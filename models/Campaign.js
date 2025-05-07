@@ -21,10 +21,18 @@ const CampaignSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+  objective: {
+    type: String,
+    trim: true
+  },
   segmentRules: [SegmentRuleSchema],
   messageTemplate: {
     type: String,
     required: true
+  },
+  useAIMessage: {
+    type: Boolean,
+    default: false
   },
   audienceSize: {
     type: Number,
@@ -49,6 +57,10 @@ const CampaignSchema = new mongoose.Schema({
   },
   scheduledDate: {
     type: Date
+  },
+  aiGenerated: {
+    type: Boolean,
+    default: false
   }
 });
 

@@ -4,7 +4,9 @@ const campaignController = require('../controllers/campaignController');
 
 // Route for creating a new campaign
 router.post('/', campaignController.createCampaign);
-
+router.get('/logs/all', campaignController.getAllLogs);
+router.get('/logs/customer/:customerId', campaignController.getLogsByCustomer);
+router.get('/logs/status/:status', campaignController.getLogsByStatus);
 // Route for getting all campaigns
 router.get('/', campaignController.getAllCampaigns);
 

@@ -7,6 +7,11 @@ const dotenv = require('dotenv');
 const customerRoutes = require('./routes/customerRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const campaignRoutes = require('./routes/campaignRoutes');
+const aiRoutes = require('./routes/aiRoutes');
+
+// Import services
+require('./services/redisService');
+require('./services/consumerService');
 
 // Import middleware
 const { errorHandler, notFound } = require('./middleware/errorMiddleware');
@@ -64,6 +69,7 @@ mongoose.connection.on('disconnected', () => {
 app.use('/api/customers', customerRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/campaigns', campaignRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Home route
 app.get('/', (req, res) => {
@@ -73,7 +79,8 @@ app.get('/', (req, res) => {
     endpoints: {
       customers: '/api/customers',
       orders: '/api/orders',
-      campaigns: '/api/campaigns'
+      campaigns: '/api/campaigns',
+      ai: '/api/ai'
     }
   });
 });

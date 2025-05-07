@@ -1,19 +1,16 @@
 const Order = require('../models/Order');
 const Customer = require('../models/Customer');
+const RedisService = require('../services/redisService');
 
 // Create a new order
 exports.createOrder = async (req, res) => {
   try {
-    // Check if customer exists
-    const customer = await Customer.findById(req.body.customer);
-    if (!customer) {
-      return res.status(404).json({ message: 'Customer not found' });
-    }
-
-    const newOrder = new Order(req.body);
-    const savedOrder = await newOrder.save();
-    
-    res.status(201).json(savedOrder);
+    // Publish to Redis instead of saving directly
+    await RedisService.publish('order:create', req.body);
+    res.status(202).json({ 
+      message: 'Order creation request accepted',
+      data: req.body
+    });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
