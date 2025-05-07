@@ -21,10 +21,44 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI)
+// MongoDB connection with optimized settings for serverless
+const MONGODB_URI = process.env.MONGODB_URI;
+
+const connectWithRetry = () => {
+  mongoose.connect(MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverSelectionTimeoutMS: 5000,
+    socketTimeoutMS: 45000,
+    maxPoolSize: 10,
+    retryWrites: true,
+    w: 'majority'
+  })
   .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('Could not connect to MongoDB', err));
+  .catch(err => {
+    console.error('Failed to connect to MongoDB on startup - retrying in 5 sec', err);
+    setTimeout(connectWithRetry, 5000);
+  });
+};
+
+// Initialize connection
+connectWithRetry();
+
+// Enable Mongoose debugging to see queries
+mongoose.set('debug', true);
+
+// Handle connection events
+mongoose.connection.on('connected', () => {
+  console.log('Mongoose connected to DB');
+});
+
+mongoose.connection.on('error', (err) => {
+  console.error('Mongoose connection error:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('Mongoose disconnected');
+});
 
 // Routes
 app.use('/api/customers', customerRoutes);
@@ -49,8 +83,17 @@ app.use(notFound);
 app.use(errorHandler);
 
 // Start server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+});
+
+// Handle server shutdown
+process.on('SIGINT', async () => {
+  await mongoose.connection.close();
+  server.close(() => {
+    console.log('Server closed. MongoDB connection disconnected.');
+    process.exit(0);
+  });
 });
 
 // For Vercel serverless deployment
