@@ -31,33 +31,23 @@ git clone <repository-url>
 cd xeno_crm_backend
 ```
 
-2. Run the setup script to create environment configuration
-```bash
-npm run setup
-```
-
-3. Install dependencies
+2. Install dependencies
 ```bash
 npm install
 ```
 
-4. Edit the `.env` file with your MongoDB connection string
+3. Edit the `.env` file with your MongoDB connection string
 ```
 MONGODB_URI=your_mongodb_connection_string
 PORT=3000
 ```
 
-5. (Optional) Seed the database with sample data
-```bash
-npm run seed
-```
-
-6. Start the development server
+4. Start the development server
 ```bash
 npm run dev
 ```
 
-7. For production, use
+5. For production, use
 ```bash
 npm start
 ```
@@ -144,9 +134,7 @@ xeno_crm_backend/
 ├── .gitignore
 ├── package.json
 ├── README.md
-├── seed.js
 ├── server.js
-├── setup.js
 └── vercel.json
 ```
 
