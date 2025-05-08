@@ -4,6 +4,7 @@ const Customer = require('../models/Customer');
 const CommunicationLog = require('../models/CommunicationLog');
 const RedisService = require('../services/redisService');
 const { generateAIMessage } = require('../services/aiService');
+const vendorService = require('../services/vendorService');
 
 // Rule evaluator
 const evaluateRule = (customer, rule) => {
@@ -56,37 +57,12 @@ exports.createCampaign = async (req, res) => {
         });
       }
 
-      for (const customer of audienceCustomers) {
-        const personalizedMessage = messageTemplate.replace('{name}', customer.name);
-
-        const log = await CommunicationLog.create({
-          campaign: savedCampaign._id,
-          customer: customer._id,
-          message: personalizedMessage,
-          status: 'PENDING',
-          sentAt: new Date()
-        });
-
-        setTimeout(async () => {
-          const isSuccess = Math.random() < 0.9;
-          await CommunicationLog.findByIdAndUpdate(log._id, {
-            status: isSuccess ? 'DELIVERED' : 'FAILED',
-            deliveredAt: isSuccess ? new Date() : null,
-            error: isSuccess ? null : 'Failed to deliver message'
-          });
-
-          await Campaign.findByIdAndUpdate(savedCampaign._id, {
-            $inc: { [isSuccess ? 'sent' : 'failed']: 1 }
-          });
-
-          await RedisService.publish('delivery:receipt', {
-            communicationLogId: log._id,
-            campaignId: savedCampaign._id,
-            status: isSuccess ? 'DELIVERED' : 'FAILED',
-            deliveredAt: isSuccess ? new Date() : null
-          });
-        }, Math.random() * 5000);
-      }
+      // Use vendorService to send messages
+      await vendorService.sendCampaignMessages(
+        audienceCustomers,
+        messageTemplate,
+        savedCampaign._id
+      );
 
       savedCampaign.status = 'sent';
       await savedCampaign.save();
@@ -136,7 +112,7 @@ exports.previewAudience = async (req, res) => {
   }
 };
 
-// 🔄 UPDATED: Delivery receipt handler
+// Delivery receipt handler
 exports.updateDeliveryReceipt = async (req, res) => {
   try {
     const { communicationLogId, status, deliveredAt, error } = req.body;
@@ -150,25 +126,18 @@ exports.updateDeliveryReceipt = async (req, res) => {
       return res.status(400).json({ message: 'Invalid status' });
     }
 
-    const updatedLog = await CommunicationLog.findByIdAndUpdate(
+    // Use vendorService to process receipt
+    await vendorService.processDeliveryReceipt({
       communicationLogId,
-      {
-        status,
-        deliveredAt: deliveredAt || new Date(),
-        error: error || null
-      },
-      { new: true }
-    ).populate('campaign');
-
-    if (!updatedLog) {
-      return res.status(404).json({ message: 'Log not found' });
-    }
-
-    await Campaign.findByIdAndUpdate(updatedLog.campaign._id, {
-      $inc: {
-        [status === 'DELIVERED' ? 'sent' : 'failed']: 1
-      }
+      campaignId: req.params.campaignId,
+      status,
+      deliveredAt,
+      error
     });
+
+    const updatedLog = await CommunicationLog.findById(communicationLogId)
+      .populate('campaign')
+      .populate('customer');
 
     res.status(200).json(updatedLog);
   } catch (error) {
@@ -188,7 +157,7 @@ exports.getCampaignLogs = async (req, res) => {
   }
 };
 
-// 🔹 NEW: Get all logs
+// Get all logs
 exports.getAllLogs = async (req, res) => {
   try {
     const logs = await CommunicationLog.find()
@@ -201,7 +170,7 @@ exports.getAllLogs = async (req, res) => {
   }
 };
 
-// 🔹 NEW: Get logs by customer
+// Get logs by customer
 exports.getLogsByCustomer = async (req, res) => {
   try {
     const logs = await CommunicationLog.find({ customer: req.params.customerId })
@@ -213,7 +182,7 @@ exports.getLogsByCustomer = async (req, res) => {
   }
 };
 
-// 🔹 NEW: Get logs by status
+// Get logs by status
 exports.getLogsByStatus = async (req, res) => {
   try {
     const validStatuses = ['PENDING', 'SENT', 'DELIVERED', 'FAILED'];
