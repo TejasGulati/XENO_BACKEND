@@ -2,10 +2,8 @@ const Order = require('../models/Order');
 const Customer = require('../models/Customer');
 const RedisService = require('../services/redisService');
 
-// Create a new order
 exports.createOrder = async (req, res) => {
   try {
-    // Publish to Redis instead of saving directly
     await RedisService.publish('order:create', req.body);
     res.status(202).json({ 
       message: 'Order creation request accepted',
@@ -16,7 +14,6 @@ exports.createOrder = async (req, res) => {
   }
 };
 
-// Get all orders
 exports.getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find().populate('customer', 'name email');
@@ -26,7 +23,6 @@ exports.getAllOrders = async (req, res) => {
   }
 };
 
-// Get an order by ID
 exports.getOrderById = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id).populate('customer', 'name email');
@@ -39,17 +35,16 @@ exports.getOrderById = async (req, res) => {
   }
 };
 
-// Get orders by customer ID
 exports.getOrdersByCustomerId = async (req, res) => {
   try {
-    const orders = await Order.find({ customer: req.params.customerId }).populate('customer', 'name email');
+    const orders = await Order.find({ customer: req.params.customerId })
+      .populate('customer', 'name email');
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// Update an order
 exports.updateOrder = async (req, res) => {
   try {
     const updatedOrder = await Order.findByIdAndUpdate(
@@ -66,7 +61,6 @@ exports.updateOrder = async (req, res) => {
   }
 };
 
-// Delete an order
 exports.deleteOrder = async (req, res) => {
   try {
     const deletedOrder = await Order.findByIdAndDelete(req.params.id);

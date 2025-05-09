@@ -2,11 +2,9 @@ const mongoose = require('mongoose');
 const Campaign = require('../models/Campaign');
 const Customer = require('../models/Customer');
 const CommunicationLog = require('../models/CommunicationLog');
-const RedisService = require('../services/redisService');
 const { generateAIMessage } = require('../services/aiService');
 const vendorService = require('../services/vendorService');
 
-// Rule evaluator
 const evaluateRule = (customer, rule) => {
   const { field, operator, value } = rule;
   switch (operator) {
@@ -27,28 +25,25 @@ const evaluateRule = (customer, rule) => {
 const customerMatchesSegment = (customer, rules) => {
   if (!rules || rules.length === 0) return true;
   let result = evaluateRule(customer, rules[0]);
-
   for (let i = 1; i < rules.length; i++) {
     const ruleResult = evaluateRule(customer, rules[i]);
-    result = rules[i].logicalOperator === 'AND' ? result && ruleResult : result || ruleResult;
+    result = rules[i].logicalOperator === 'AND' ? 
+      result && ruleResult : result || ruleResult;
   }
-
   return result;
 };
 
-// Create campaign
 exports.createCampaign = async (req, res) => {
   try {
     const newCampaign = new Campaign(req.body);
     const customers = await Customer.find();
-    const audienceCustomers = customers.filter(c => customerMatchesSegment(c, newCampaign.segmentRules));
+    const audienceCustomers = customers.filter(c => 
+      customerMatchesSegment(c, newCampaign.segmentRules));
     newCampaign.audienceSize = audienceCustomers.length;
-
     const savedCampaign = await newCampaign.save();
 
     if (savedCampaign.status !== 'draft') {
       let messageTemplate = savedCampaign.messageTemplate;
-
       if (savedCampaign.useAIMessage) {
         messageTemplate = await generateAIMessage({
           campaignObjective: savedCampaign.objective,
@@ -56,25 +51,20 @@ exports.createCampaign = async (req, res) => {
           baseMessage: messageTemplate
         });
       }
-
-      // Use vendorService to send messages
       await vendorService.sendCampaignMessages(
         audienceCustomers,
         messageTemplate,
         savedCampaign._id
       );
-
       savedCampaign.status = 'sent';
       await savedCampaign.save();
     }
-
     res.status(201).json(savedCampaign);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-// Get all campaigns
 exports.getAllCampaigns = async (req, res) => {
   try {
     const campaigns = await Campaign.find().sort({ createdAt: -1 });
@@ -84,7 +74,6 @@ exports.getAllCampaigns = async (req, res) => {
   }
 };
 
-// Get campaign by ID
 exports.getCampaignById = async (req, res) => {
   try {
     const campaign = await Campaign.findById(req.params.id);
@@ -95,7 +84,6 @@ exports.getCampaignById = async (req, res) => {
   }
 };
 
-// Preview audience
 exports.previewAudience = async (req, res) => {
   try {
     const { segmentRules } = req.body;
@@ -112,21 +100,16 @@ exports.previewAudience = async (req, res) => {
   }
 };
 
-// Delivery receipt handler
 exports.updateDeliveryReceipt = async (req, res) => {
   try {
     const { communicationLogId, status, deliveredAt, error } = req.body;
-
     if (!mongoose.Types.ObjectId.isValid(communicationLogId)) {
       return res.status(400).json({ message: 'Invalid log ID' });
     }
-
     const validStatuses = ['DELIVERED', 'FAILED'];
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ message: 'Invalid status' });
     }
-
-    // Use vendorService to process receipt
     await vendorService.processDeliveryReceipt({
       communicationLogId,
       campaignId: req.params.campaignId,
@@ -134,18 +117,15 @@ exports.updateDeliveryReceipt = async (req, res) => {
       deliveredAt,
       error
     });
-
     const updatedLog = await CommunicationLog.findById(communicationLogId)
       .populate('campaign')
       .populate('customer');
-
     res.status(200).json(updatedLog);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
 
-// Campaign logs
 exports.getCampaignLogs = async (req, res) => {
   try {
     const logs = await CommunicationLog.find({ campaign: req.params.id })
@@ -157,7 +137,6 @@ exports.getCampaignLogs = async (req, res) => {
   }
 };
 
-// Get all logs
 exports.getAllLogs = async (req, res) => {
   try {
     const logs = await CommunicationLog.find()
@@ -170,7 +149,6 @@ exports.getAllLogs = async (req, res) => {
   }
 };
 
-// Get logs by customer
 exports.getLogsByCustomer = async (req, res) => {
   try {
     const logs = await CommunicationLog.find({ customer: req.params.customerId })
@@ -182,7 +160,6 @@ exports.getLogsByCustomer = async (req, res) => {
   }
 };
 
-// Get logs by status
 exports.getLogsByStatus = async (req, res) => {
   try {
     const validStatuses = ['PENDING', 'SENT', 'DELIVERED', 'FAILED'];
@@ -190,7 +167,6 @@ exports.getLogsByStatus = async (req, res) => {
     if (!validStatuses.includes(status)) {
       return res.status(400).json({ message: 'Invalid status' });
     }
-
     const logs = await CommunicationLog.find({ status })
       .populate('campaign', 'name')
       .populate('customer', 'name email')

@@ -7,7 +7,6 @@ const Campaign = require('../models/Campaign');
 class ConsumerService {
   constructor() {
     this.deliveryReceipts = [];
-    this.receiptTimer = null;
     this.initializeConsumers();
   }
 
@@ -15,46 +14,29 @@ class ConsumerService {
     try {
       await RedisService.connect();
 
-      await RedisService.subscribe('customer:create', async (data) => {
+      RedisService.subscribe('customer:create', async (data) => {
         try {
           const customer = new Customer(data);
           await customer.save();
-          console.log(`Created customer: ${customer._id}`);
         } catch (err) {
           console.error('Error processing customer:', err);
         }
       });
 
-      await RedisService.subscribe('order:create', async (data) => {
+      RedisService.subscribe('order:create', async (data) => {
         try {
-          const customer = await Customer.findById(data.customer);
-          if (!customer) {
-            console.error(`Customer not found: ${data.customer}`);
-            return;
-          }
-
           const order = new Order(data);
           await order.save();
-          console.log(`Created order: ${order._id}`);
         } catch (err) {
           console.error('Error processing order:', err);
         }
       });
 
-      await RedisService.subscribe('delivery:receipt', async (data) => {
+      RedisService.subscribe('delivery:receipt', async (data) => {
         this.deliveryReceipts.push(data);
-
-        if (this.deliveryReceipts.length >= 10) {
-          await this.processDeliveryReceipts();
-        } else if (!this.receiptTimer) {
-          this.receiptTimer = setTimeout(async () => {
-            await this.processDeliveryReceipts();
-            this.receiptTimer = null;
-          }, 5000);
-        }
+        if (this.deliveryReceipts.length >= 5) await this.processDeliveryReceipts();
       });
 
-      console.log('Redis consumers initialized');
     } catch (err) {
       console.error('Error initializing Redis consumers:', err);
     }
@@ -62,7 +44,6 @@ class ConsumerService {
 
   async processDeliveryReceipts() {
     if (this.deliveryReceipts.length === 0) return;
-
     const receipts = [...this.deliveryReceipts];
     this.deliveryReceipts = [];
 
@@ -70,44 +51,19 @@ class ConsumerService {
       const bulkOps = receipts.map(receipt => ({
         updateOne: {
           filter: { _id: receipt.communicationLogId },
-          update: {
-            $set: {
-              status: receipt.status,
-              deliveredAt: receipt.deliveredAt || new Date()
-            }
-          }
+          update: { status: receipt.status, deliveredAt: receipt.deliveredAt }
         }
       }));
 
       await CommunicationLog.bulkWrite(bulkOps);
 
-      const campaignUpdates = {};
-      receipts.forEach(receipt => {
-        if (!campaignUpdates[receipt.campaignId]) {
-          campaignUpdates[receipt.campaignId] = { sent: 0, failed: 0 };
-        }
-
-        if (receipt.status === 'SENT') {
-          campaignUpdates[receipt.campaignId].sent += 1;
-        } else if (receipt.status === 'FAILED') {
-          campaignUpdates[receipt.campaignId].failed += 1;
-        }
-      });
-
-      await Promise.all(
-        Object.entries(campaignUpdates).map(([campaignId, stats]) =>
-          Campaign.findByIdAndUpdate(campaignId, {
-            $inc: {
-              sent: stats.sent,
-              failed: stats.failed
-            }
-          })
-        )
-      );
-
-      console.log(`Processed ${receipts.length} delivery receipts`);
+      for (const receipt of receipts) {
+        await Campaign.findByIdAndUpdate(receipt.campaignId, {
+          $inc: { [receipt.status === 'DELIVERED' ? 'sent' : 'failed']: 1 }
+        });
+      }
     } catch (err) {
-      console.error('Error processing delivery receipts:', err);
+      console.error('Error processing receipts:', err);
     }
   }
 }

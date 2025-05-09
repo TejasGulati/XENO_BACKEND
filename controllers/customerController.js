@@ -1,10 +1,8 @@
 const Customer = require('../models/Customer');
 const RedisService = require('../services/redisService');
 
-// Create a new customer
 exports.createCustomer = async (req, res) => {
   try {
-    // Publish to Redis instead of saving directly
     await RedisService.publish('customer:create', req.body);
     res.status(202).json({ 
       message: 'Customer creation request accepted',
@@ -15,7 +13,6 @@ exports.createCustomer = async (req, res) => {
   }
 };
 
-// Get all customers
 exports.getAllCustomers = async (req, res) => {
   try {
     const customers = await Customer.find();
@@ -25,7 +22,6 @@ exports.getAllCustomers = async (req, res) => {
   }
 };
 
-// Get a customer by ID
 exports.getCustomerById = async (req, res) => {
   try {
     const customer = await Customer.findById(req.params.id);
@@ -38,7 +34,6 @@ exports.getCustomerById = async (req, res) => {
   }
 };
 
-// Update a customer
 exports.updateCustomer = async (req, res) => {
   try {
     const updatedCustomer = await Customer.findByIdAndUpdate(
@@ -55,7 +50,6 @@ exports.updateCustomer = async (req, res) => {
   }
 };
 
-// Delete a customer
 exports.deleteCustomer = async (req, res) => {
   try {
     const deletedCustomer = await Customer.findByIdAndDelete(req.params.id);

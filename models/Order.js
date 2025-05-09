@@ -26,7 +26,6 @@ const OrderSchema = new mongoose.Schema({
   }
 });
 
-// Update customer's total spend when a new order is created
 OrderSchema.post('save', async function() {
   try {
     const Customer = mongoose.model('Customer');
