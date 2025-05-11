@@ -1,448 +1,586 @@
 {
-    "info": {
-      "_postman_id": "a1b2c3d4-e5f6-7890-f1g2-h3i4j5k6l7m8",
-      "name": "Xeno CRM Backend API - Complete",
-      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-      "description": "Complete API collection for Xeno CRM Backend with all endpoints including communication logs"
-    },
-    "variable": [
-      {
-        "key": "base_url",
-        "value": "http://localhost:3000",
-        "description": "Base URL for the API (change to production URL when needed)"
-      },
-      {
-        "key": "campaign_id",
-        "value": "665f1c9b3e1a2b4c5d6e7f89",
-        "description": "Sample campaign ID - replace with real ID"
-      },
-      {
-        "key": "customer_id",
-        "value": "665f1c9b3e1a2b4c5d6e7f90",
-        "description": "Sample customer ID - replace with real ID"
-      },
-      {
-        "key": "log_id",
-        "value": "665f1d7b4c5d6e7f89a1b2d4",
-        "description": "Sample communication log ID - replace with real ID"
-      }
-    ],
-    "item": [
-      {
-        "name": "Customers",
-        "item": [
-          {
-            "name": "Create Customer",
-            "request": {
-              "method": "POST",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-f1e2-d3c4b5a6f7e8",
+    "name": "XENO CRM Backend API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"+1234567890\",\n  \"totalSpend\": 0,\n  \"visitCount\": 0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
                 }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/customers",
+              "host": [
+                "{{base_url}}"
               ],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"phone\": \"+1234567890\",\n  \"totalSpend\": 0,\n  \"visitCount\": 0\n}"
-              },
-              "url": {
-                "raw": "{{base_url}}/api/customers",
-                "host": ["{{base_url}}"],
-                "path": ["api", "customers"]
-              }
+              "path": [
+                "api",
+                "customers"
+              ]
             }
           },
-          {
-            "name": "Get All Customers",
-            "request": {
-              "method": "GET",
-              "header": [],
-              "url": {
-                "raw": "{{base_url}}/api/customers",
-                "host": ["{{base_url}}"],
-                "path": ["api", "customers"]
-              }
+          "response": []
+        },
+        {
+          "name": "Get All Customers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/customers",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "customers"
+              ]
             }
           },
-          {
-            "name": "Get Customer by ID",
-            "request": {
-              "method": "GET",
-              "header": [],
-              "url": {
-                "raw": "{{base_url}}/api/customers/{{customer_id}}",
-                "host": ["{{base_url}}"],
-                "path": ["api", "customers", "{{customer_id}}"]
-              }
+          "response": []
+        },
+        {
+          "name": "Get Customer by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/customers/663b8e4a5a1d8f3a7c4b5a6f",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "customers",
+                "663b8e4a5a1d8f3a7c4b5a6f"
+              ]
             }
           },
-          {
-            "name": "Update Customer",
-            "request": {
-              "method": "PUT",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
+          "response": []
+        },
+        {
+          "name": "Update Customer",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Updated\",\n  \"email\": \"john.updated@example.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
                 }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/customers/663b8e4a5a1d8f3a7c4b5a6f",
+              "host": [
+                "{{base_url}}"
               ],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n  \"name\": \"John Updated\",\n  \"email\": \"john.updated@example.com\"\n}"
-              },
-              "url": {
-                "raw": "{{base_url}}/api/customers/{{customer_id}}",
-                "host": ["{{base_url}}"],
-                "path": ["api", "customers", "{{customer_id}}"]
-              }
+              "path": [
+                "api",
+                "customers",
+                "663b8e4a5a1d8f3a7c4b5a6f"
+              ]
             }
           },
-          {
-            "name": "Delete Customer",
-            "request": {
-              "method": "DELETE",
-              "header": [],
-              "url": {
-                "raw": "{{base_url}}/api/customers/{{customer_id}}",
-                "host": ["{{base_url}}"],
-                "path": ["api", "customers", "{{customer_id}}"]
-              }
-            }
-          }
-        ]
-      },
-      {
-        "name": "Orders",
-        "item": [
-          {
-            "name": "Create Order",
-            "request": {
-              "method": "POST",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
+          "response": []
+        },
+        {
+          "name": "Delete Customer",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/customers/663b8e4a5a1d8f3a7c4b5a6f",
+              "host": [
+                "{{base_url}}"
               ],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n  \"customer\": \"{{customer_id}}\",\n  \"orderAmount\": 100.50,\n  \"items\": [\n    {\n      \"name\": \"Product A\",\n      \"price\": 50.25,\n      \"quantity\": 2\n    }\n  ],\n  \"status\": \"pending\"\n}"
-              },
-              "url": {
-                "raw": "{{base_url}}/api/orders",
-                "host": ["{{base_url}}"],
-                "path": ["api", "orders"]
-              }
+              "path": [
+                "api",
+                "customers",
+                "663b8e4a5a1d8f3a7c4b5a6f"
+              ]
             }
           },
-          {
-            "name": "Get All Orders",
-            "request": {
-              "method": "GET",
-              "header": [],
-              "url": {
-                "raw": "{{base_url}}/api/orders",
-                "host": ["{{base_url}}"],
-                "path": ["api", "orders"]
-              }
-            }
-          },
-          {
-            "name": "Get Order by ID",
-            "request": {
-              "method": "GET",
-              "header": [],
-              "url": {
-                "raw": "{{base_url}}/api/orders/:id",
-                "host": ["{{base_url}}"],
-                "path": ["api", "orders", ":id"],
-                "variable": [
-                  {
-                    "key": "id",
-                    "value": "order_id_here"
-                  }
-                ]
-              }
-            }
-          },
-          {
-            "name": "Get Orders by Customer ID",
-            "request": {
-              "method": "GET",
-              "header": [],
-              "url": {
-                "raw": "{{base_url}}/api/orders/customer/{{customer_id}}",
-                "host": ["{{base_url}}"],
-                "path": ["api", "orders", "customer", "{{customer_id}}"]
-              }
-            }
-          },
-          {
-            "name": "Update Order",
-            "request": {
-              "method": "PUT",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n  \"status\": \"completed\"\n}"
-              },
-              "url": {
-                "raw": "{{base_url}}/api/orders/:id",
-                "host": ["{{base_url}}"],
-                "path": ["api", "orders", ":id"],
-                "variable": [
-                  {
-                    "key": "id",
-                    "value": "order_id_here"
-                  }
-                ]
-              }
-            }
-          },
-          {
-            "name": "Delete Order",
-            "request": {
-              "method": "DELETE",
-              "header": [],
-              "url": {
-                "raw": "{{base_url}}/api/orders/:id",
-                "host": ["{{base_url}}"],
-                "path": ["api", "orders", ":id"],
-                "variable": [
-                  {
-                    "key": "id",
-                    "value": "order_id_here"
-                  }
-                ]
-              }
-            }
-          }
-        ]
-      },
-      {
-        "name": "Campaigns",
-        "item": [
-          {
-            "name": "Create Campaign",
-            "request": {
-              "method": "POST",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n  \"name\": \"Summer Sale\",\n  \"description\": \"Campaign for summer sale 2023\",\n  \"objective\": \"Increase sales\",\n  \"segmentRules\": [\n    {\n      \"field\": \"totalSpend\",\n      \"operator\": \"GREATER_THAN\",\n      \"value\": 100,\n      \"logicalOperator\": \"AND\"\n    }\n  ],\n  \"messageTemplate\": \"Hi {name}, check out our summer sale!\",\n  \"useAIMessage\": false,\n  \"status\": \"draft\"\n}"
-              },
-              "url": {
-                "raw": "{{base_url}}/api/campaigns",
-                "host": ["{{base_url}}"],
-                "path": ["api", "campaigns"]
-              }
-            }
-          },
-          {
-            "name": "Get All Campaigns",
-            "request": {
-              "method": "GET",
-              "header": [],
-              "url": {
-                "raw": "{{base_url}}/api/campaigns",
-                "host": ["{{base_url}}"],
-                "path": ["api", "campaigns"]
-              }
-            }
-          },
-          {
-            "name": "Get Campaign by ID",
-            "request": {
-              "method": "GET",
-              "header": [],
-              "url": {
-                "raw": "{{base_url}}/api/campaigns/{{campaign_id}}",
-                "host": ["{{base_url}}"],
-                "path": ["api", "campaigns", "{{campaign_id}}"]
-              }
-            }
-          },
-          {
-            "name": "Preview Audience",
-            "request": {
-              "method": "POST",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n  \"segmentRules\": [\n    {\n      \"field\": \"totalSpend\",\n      \"operator\": \"GREATER_THAN\",\n      \"value\": 100,\n      \"logicalOperator\": \"AND\"\n    }\n  ]\n}"
-              },
-              "url": {
-                "raw": "{{base_url}}/api/campaigns/preview-audience",
-                "host": ["{{base_url}}"],
-                "path": ["api", "campaigns", "preview-audience"]
-              }
-            }
-          },
-          {
-            "name": "Update Delivery Receipt",
-            "request": {
-              "method": "POST",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n  \"communicationLogId\": \"{{log_id}}\",\n  \"status\": \"DELIVERED\",\n  \"deliveredAt\": \"2023-07-15T12:00:00Z\"\n}"
-              },
-              "url": {
-                "raw": "{{base_url}}/api/campaigns/delivery-receipt",
-                "host": ["{{base_url}}"],
-                "path": ["api", "campaigns", "delivery-receipt"]
-              }
-            }
-          },
-          {
-            "name": "Get Campaign Logs",
-            "request": {
-              "method": "GET",
-              "header": [],
-              "url": {
-                "raw": "{{base_url}}/api/campaigns/{{campaign_id}}/logs",
-                "host": ["{{base_url}}"],
-                "path": ["api", "campaigns", "{{campaign_id}}", "logs"]
-              }
-            }
-          },
-          {
-            "name": "Get All Logs",
-            "request": {
-              "method": "GET",
-              "header": [],
-              "url": {
-                "raw": "{{base_url}}/api/campaigns/logs/all",
-                "host": ["{{base_url}}"],
-                "path": ["api", "campaigns", "logs", "all"]
-              }
-            }
-          },
-          {
-            "name": "Get Logs by Customer",
-            "request": {
-              "method": "GET",
-              "header": [],
-              "url": {
-                "raw": "{{base_url}}/api/campaigns/logs/customer/{{customer_id}}",
-                "host": ["{{base_url}}"],
-                "path": ["api", "campaigns", "logs", "customer", "{{customer_id}}"]
-              }
-            }
-          },
-          {
-            "name": "Get Logs by Status",
-            "request": {
-              "method": "GET",
-              "header": [],
-              "url": {
-                "raw": "{{base_url}}/api/campaigns/logs/status/DELIVERED",
-                "host": ["{{base_url}}"],
-                "path": ["api", "campaigns", "logs", "status", "DELIVERED"]
-              }
-            }
-          }
-        ]
-      },
-      {
-        "name": "AI Services",
-        "item": [
-          {
-            "name": "Generate Message Variants",
-            "request": {
-              "method": "POST",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n  \"campaignObjective\": \"Increase sales\",\n  \"audienceDescription\": \"High-value customers\",\n  \"baseMessage\": \"Check out our new products!\"\n}"
-              },
-              "url": {
-                "raw": "{{base_url}}/api/ai/generate-message",
-                "host": ["{{base_url}}"],
-                "path": ["api", "ai", "generate-message"]
-              }
-            }
-          },
-          {
-            "name": "Generate Segment Rules",
-            "request": {
-              "method": "POST",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n  \"naturalLanguage\": \"Customers who spent more than $100 in the last 30 days\"\n}"
-              },
-              "url": {
-                "raw": "{{base_url}}/api/ai/generate-segment-rules",
-                "host": ["{{base_url}}"],
-                "path": ["api", "ai", "generate-segment-rules"]
-              }
-            }
-          },
-          {
-            "name": "Generate Campaign Summary",
-            "request": {
-              "method": "POST",
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": {
-                "mode": "raw",
-                "raw": "{\n  \"name\": \"Summer Sale\",\n  \"audienceSize\": 1000,\n  \"sent\": 950,\n  \"failed\": 50,\n  \"objective\": \"Increase sales\",\n  \"description\": \"Targeting high-value customers\"\n}"
-              },
-              "url": {
-                "raw": "{{base_url}}/api/ai/generate-campaign-summary",
-                "host": ["{{base_url}}"],
-                "path": ["api", "ai", "generate-campaign-summary"]
-              }
-            }
-          }
-        ]
-      },
-      {
-        "name": "Root Endpoint",
-        "request": {
-          "method": "GET",
-          "header": [],
-          "url": {
-            "raw": "{{base_url}}/",
-            "host": ["{{base_url}}"],
-            "path": [""]
-          }
+          "response": []
         }
-      }
-    ]
-  }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Create Order",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer\": \"663b8e4a5a1d8f3a7c4b5a6f\",\n  \"orderAmount\": 99.99,\n  \"items\": [\n    {\n      \"name\": \"Premium Subscription\",\n      \"price\": 99.99,\n      \"quantity\": 1\n    }\n  ],\n  \"status\": \"completed\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/orders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Order by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/orders/663b8e4a5a1d8f3a7c4b5a6f",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders",
+                "663b8e4a5a1d8f3a7c4b5a6f"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Orders by Customer ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/orders/customer/663b8e4a5a1d8f3a7c4b5a6f",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders",
+                "customer",
+                "663b8e4a5a1d8f3a7c4b5a6f"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Order",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"cancelled\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/orders/663b8e4a5a1d8f3a7c4b5a6f",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders",
+                "663b8e4a5a1d8f3a7c4b5a6f"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Order",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/orders/663b8e4a5a1d8f3a7c4b5a6f",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "orders",
+                "663b8e4a5a1d8f3a7c4b5a6f"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Campaigns",
+      "item": [
+        {
+          "name": "Create Campaign",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Summer Sale 2024\",\n  \"description\": \"Targeting high-value customers\",\n  \"objective\": \"Increase repeat purchases\",\n  \"segmentRules\": [\n    {\n      \"field\": \"totalSpend\",\n      \"operator\": \"GREATER_THAN\",\n      \"value\": 100,\n      \"logicalOperator\": \"AND\"\n    },\n    {\n      \"field\": \"lastVisit\",\n      \"operator\": \"DAYS_AGO\",\n      \"value\": 30,\n      \"logicalOperator\": \"AND\"\n    }\n  ],\n  \"messageTemplate\": \"Hi {name}, we miss you! Here's 20% off your next purchase.\",\n  \"useAIMessage\": true,\n  \"status\": \"sent\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/campaigns",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "campaigns"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Campaigns",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/campaigns",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "campaigns"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Campaign by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/campaigns/663b8e4a5a1d8f3a7c4b5a6f",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "campaigns",
+                "663b8e4a5a1d8f3a7c4b5a6f"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Preview Audience",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"segmentRules\": [\n    {\n      \"field\": \"totalSpend\",\n      \"operator\": \"GREATER_THAN\",\n      \"value\": 100\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/campaigns/preview-audience",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "campaigns",
+                "preview-audience"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Delivery Receipt",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"communicationLogId\": \"663b8e4a5a1d8f3a7c4b5a6f\",\n  \"status\": \"DELIVERED\",\n  \"deliveredAt\": \"2024-05-10T12:00:00Z\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/campaigns/delivery-receipt",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "campaigns",
+                "delivery-receipt"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Campaign Logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/campaigns/663b8e4a5a1d8f3a7c4b5a6f/logs",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "campaigns",
+                "663b8e4a5a1d8f3a7c4b5a6f",
+                "logs"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Logs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/campaigns/logs/all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "campaigns",
+                "logs",
+                "all"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Logs by Customer",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/campaigns/logs/customer/663b8e4a5a1d8f3a7c4b5a6f",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "campaigns",
+                "logs",
+                "customer",
+                "663b8e4a5a1d8f3a7c4b5a6f"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Logs by Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/campaigns/logs/status/DELIVERED",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "campaigns",
+                "logs",
+                "status",
+                "DELIVERED"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "AI Services",
+      "item": [
+        {
+          "name": "Generate AI Message",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"campaignObjective\": \"Increase customer retention\",\n  \"audienceDescription\": \"Customers who haven't purchased in 30 days\",\n  \"baseMessage\": \"We miss you! Here's a special offer just for you.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/ai/generate-message",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "ai",
+                "generate-message"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Segment Rules",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"naturalLanguage\": \"Customers who spent more than $100 in the last 30 days\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/ai/generate-segment-rules",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "ai",
+                "generate-segment-rules"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Generate Campaign Summary",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Summer Sale 2024\",\n  \"audienceSize\": 1500,\n  \"sent\": 1420,\n  \"failed\": 80,\n  \"objective\": \"Increase repeat purchases\",\n  \"description\": \"Targeting high-value customers\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/ai/generate-campaign-summary",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "ai",
+                "generate-campaign-summary"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Root",
+      "item": [
+        {
+          "name": "Home",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                ""
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ]
+}
